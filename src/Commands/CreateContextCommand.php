@@ -26,9 +26,13 @@ class CreateContextCommand extends Command
         $basePath = config('base-domain-structure.paths.src');
         $path = "{$basePath}/{$contextName}";
 
-        if (File::exists($path) && ! $this->option('force')) {
-            $this->error("Context [{$contextName}] already exists. Use --force to overwrite.");
-            return Command::FAILURE;
+        if (File::exists($path)) {
+            if (! $this->option('force')) {
+                $this->error("Context [{$contextName}] already exists. Use --force to overwrite.");
+                return Command::FAILURE;
+            }
+            $this->warn("Removing existing context [{$contextName}]...");
+            File::deleteDirectory($path);
         }
 
         $directories = config('base-domain-structure.structure');
