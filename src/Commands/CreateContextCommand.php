@@ -163,7 +163,7 @@ class CreateContextCommand extends Command
             $stub
         );
         File::put($path . '/DomainLayer/Storage/' . $contextName . 'StorageInterface.php', $content);
-
-        File::put($path, File::get(__DIR__ . '/../Stubs/routes.stub'));
+        
+        File::put($path . '/PresentationLayer/HTTP/V1/routes.php', File::get(__DIR__ . '/../Stubs/routes.stub'));
     }
 }
