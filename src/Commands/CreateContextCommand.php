@@ -61,10 +61,50 @@ class CreateContextCommand extends Command
 
         $this->createFiles($path, $contextName);
 
+        $this->updateOrCreateServiceProvider($contextName);
+
         $this->info("Bounded Context for [{$contextName}] created successfully.");
         $this->line("Location: {$path}");
 
         return Command::SUCCESS;
+    }
+
+    private function updateOrCreateServiceProvider(string $contextName): void
+    {
+        $basePath = config('base-domain-structure.paths.src');
+        $providerPath = $basePath . '/ServiceProvider.php';
+        $baseNamespace = config('base-domain-structure.namespaces.src');
+
+        $contexts = collect(File::directories($basePath))
+            ->map(fn (string $path) => basename($path))
+            ->filter(fn (string $name) => ! str_starts_with($name, '.'))
+            ->sort()
+            ->values()
+            ->all();
+
+        $indent = '        ';
+        $registerRoutesBody = implode("\n", array_map(
+            fn (string $context) => $indent . "Route::middleware(\$this->openMiddleware)->group(__DIR__ . '/{$context}/PresentationLayer/HTTP/V1/routes.php');",
+            $contexts
+        ));
+
+        $contractsLines = [];
+        foreach ($contexts as $context) {
+            $domainNs = '\\' . $baseNamespace . '\\' . $context;
+            $contractsLines[] = $indent . "\$this->app->bind({$domainNs}\\DomainLayer\\Repository\\{$context}RepositoryInterface::class, {$domainNs}\\InfrastructureLayer\\Repository\\{$context}Repository::class);";
+            $contractsLines[] = $indent . "\$this->app->bind({$domainNs}\\DomainLayer\\Storage\\{$context}StorageInterface::class, {$domainNs}\\InfrastructureLayer\\Storage\\{$context}Storage::class);";
+        }
+        $registerContractsBody = implode("\n", $contractsLines);
+
+        $stub = File::get(__DIR__ . '/../Stubs/service-provider.stub');
+        $content = str_replace(
+            ['{{ namespace }}', '{{ register_routes_body }}', '{{ register_contracts_body }}'],
+            [$baseNamespace, $registerRoutesBody, $registerContractsBody],
+            $stub
+        );
+
+        File::put($providerPath, $content);
+        $this->line("Service provider updated: {$providerPath}");
     }
 
     private function createDirectoriesRecursively(string $basePath, array $directories): void

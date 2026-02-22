@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Src;
+namespace {{ namespace }};
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider as IlluminateServiceProvider;
@@ -35,12 +35,11 @@ class ServiceProvider extends IlluminateServiceProvider
 
     public function registerRoutes(): void
     {
-        Route::middleware($this->openMiddleware)->group(__DIR__ . '/{context}/PresentationLayer/HTTP/V1/routes.php');
+{{ register_routes_body }}
     }
 
     public function registerContracts(): void
     {
-        $this->app->bind({some}RepositoryInterface::class, {some}Repository::class);
-        $this->app->bind({some}StorageInterface::class, {some}Storage::class);
+{{ register_contracts_body }}
     }
 }
