@@ -162,6 +162,12 @@ class CreateContextCommand extends Command
         );
         File::put($path . '/DomainLayer/Storage/' . $contextName . 'StorageInterface.php', $content);
 
-        File::put($path . '/PresentationLayer/HTTP/V1/routes.php', File::get(__DIR__ . '/../Stubs/routes.stub'));
+        $stub = File::get(__DIR__ . '/../Stubs/routes.stub');
+        $content = str_replace(
+            ['{{ class }}'],
+            [$contextName],
+            $stub
+        );
+        File::put($path . '/PresentationLayer/HTTP/V1/routes.php', $content);
     }
 }
