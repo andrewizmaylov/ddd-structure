@@ -6,5 +6,5 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('public/api/v1/{{ class }}')
     ->group(function () {
-
+        Route::__method__('__path__', {{ controller }}::class);
     });

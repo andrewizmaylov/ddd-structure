@@ -133,8 +133,8 @@ class CreateContextCommand extends Command
 
         $indent = '        ';
         $registerRoutesBody = implode("\n", array_map(
-            fn(string $context
-            ) => $indent . "Route::middleware(\$this->openMiddleware)->group(__DIR__ . '/{$context}/PresentationLayer/HTTP/V1/routes.php');",
+            fn(string $context)
+                => $indent . "Route::middleware(\$this->openMiddleware)->group(__DIR__ . '/{$context}/PresentationLayer/HTTP/V1/routes.php');",
             $contexts
         ));
 

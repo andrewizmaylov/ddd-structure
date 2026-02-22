@@ -22,13 +22,13 @@ class {{ class }} implements ResponderInterface
 
     public function composeEntity(object $entity): array
     {
-        if (! $entity instanceof {{ class }}) {
-            throw new UnsupportedObjectException;
+        if (! $entity instanceof {{ entity }}) {
+            throw new Exception('Received unsupported entity ' . {{ entity }});
         }
 
         return [
             'id' => $entity->id->value(),
-            'type' => '{{ class }}',
+            'type' => '{{ entity }}',
             'attributes' => [
             ],
         ];

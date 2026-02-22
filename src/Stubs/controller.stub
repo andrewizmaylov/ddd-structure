@@ -4,15 +4,16 @@ declare(strict_types=1);
 
 namespace {{ namespace }};
 
+use App\Http\Controllers\Controller;
 use Psr\Log\LoggerInterface;
 use DomainDriven\BaseDomainStructure\Responder\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
-use Throwable;
 use {{ request_fqcn }};
 use {{ process_fqcn }};
 use {{ responder_fqcn }};
+use Throwable;
 
-final readonly class {{ class }}
+final readonly class {{ class }} extends Controller
 {
     public function __construct(
         public LoggerInterface $logger,
@@ -46,7 +47,8 @@ final readonly class {{ class }}
                 ],
             ]);
 
-            return $response;
         }
+
+        return $response;
     }
 }
