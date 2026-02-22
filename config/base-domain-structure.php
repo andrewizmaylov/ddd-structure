@@ -35,4 +35,15 @@ return [
             ]
         ],
     ],
+
+    /*
+    | Relative paths (from context root) for make:use-case generated files.
+    | Override these to match your preferred structure.
+    */
+    'use_case_paths' => [
+        'use_case'   => 'ApplicationLayer/UseCases',
+        'controller' => 'PresentationLayer/HTTP/V1/Controllers',
+        'request'    => 'PresentationLayer/HTTP/V1/Requests',
+        'responder'  => 'PresentationLayer/HTTP/V1/Responders',
+    ],
 ];

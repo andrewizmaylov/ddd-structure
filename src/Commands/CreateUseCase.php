@@ -45,11 +45,18 @@ class CreateUseCase extends Command
         $requestClass = $name . 'Request';
         $responderClass = $name . 'Responder';
 
+        $pathSegments = config('base-domain-structure.use_case_paths', [
+            'use_case'   => 'ApplicationLayer/UseCases',
+            'controller' => 'PresentationLayer/HTTP/V1/Controllers',
+            'request'    => 'PresentationLayer/HTTP/V1/Requests',
+            'responder'  => 'PresentationLayer/HTTP/V1/Responders',
+        ]);
+
         $paths = [
-            'use_case' => "{$contextPath}/ApplicationLayer/UseCases/{$useCaseClass}.php",
-            'controller' => "{$contextPath}/PresentationLayer/HTTP/V1/Controllers/{$controllerClass}.php",
-            'request' => "{$contextPath}/PresentationLayer/HTTP/V1/Requests/{$requestClass}.php",
-            'responder' => "{$contextPath}/PresentationLayer/HTTP/V1/Responders/{$responderClass}.php",
+            'use_case'   => "{$contextPath}/{$pathSegments['use_case']}/{$useCaseClass}.php",
+            'controller' => "{$contextPath}/{$pathSegments['controller']}/{$controllerClass}.php",
+            'request'    => "{$contextPath}/{$pathSegments['request']}/{$requestClass}.php",
+            'responder'  => "{$contextPath}/{$pathSegments['responder']}/{$responderClass}.php",
         ];
 
         if (!$this->option('force')) {
@@ -68,6 +75,12 @@ class CreateUseCase extends Command
         File::ensureDirectoryExists(dirname($paths['responder']));
 
         $contextNs = $baseNamespace . '\\' . $context;
+        $pathToNs = static fn(string $path): string => str_replace('/', '\\', $path);
+        $useCaseNs = $contextNs . '\\' . $pathToNs($pathSegments['use_case']);
+        $requestNs = $contextNs . '\\' . $pathToNs($pathSegments['request']);
+        $controllerNs = $contextNs . '\\' . $pathToNs($pathSegments['controller']);
+        $responderNs = $contextNs . '\\' . $pathToNs($pathSegments['responder']);
+
         $storageInterface = $context . 'StorageInterface';
         $repositoryInterface = $context . 'RepositoryInterface';
         $storageFqcn = $contextNs . '\\DomainLayer\\Storage\\' . $storageInterface;
@@ -84,7 +97,7 @@ class CreateUseCase extends Command
                 '{{ repository_fqcn }}'
             ],
             [
-                $contextNs . '\\ApplicationLayer\\UseCases',
+                $useCaseNs,
                 $useCaseClass,
                 $storageInterface,
                 $repositoryInterface,
@@ -95,7 +108,6 @@ class CreateUseCase extends Command
         );
         File::put($paths['use_case'], $useCaseContent);
 
-        $requestNs = $contextNs . '\\PresentationLayer\\HTTP\\V1\\Requests';
         $requestStub = File::get(__DIR__ . '/../Stubs/request.stub');
         $requestContent = str_replace(
             ['{{ namespace }}', '{{ class }}'],
@@ -104,7 +116,6 @@ class CreateUseCase extends Command
         );
         File::put($paths['request'], $requestContent);
 
-        $controllerNs = $contextNs . '\\PresentationLayer\\HTTP\\V1\\Controllers';
         $controllerStub = File::get(__DIR__ . '/../Stubs/controller.stub');
         $controllerContent = str_replace(
             [
@@ -123,15 +134,14 @@ class CreateUseCase extends Command
                 $requestClass,
                 $requestNs . '\\' . $requestClass,
                 $useCaseClass,
-                $contextNs . '\\ApplicationLayer\\UseCases\\' . $useCaseClass,
+                $useCaseNs . '\\' . $useCaseClass,
                 $responderClass,
-                $contextNs . '\\PresentationLayer\\HTTP\\V1\\Responders\\' . $responderClass,
+                $responderNs . '\\' . $responderClass,
             ],
             $controllerStub
         );
         File::put($paths['controller'], $controllerContent);
 
-        $responderNs = $contextNs . '\\PresentationLayer\\HTTP\\V1\\Responders';
         $responderStub = File::get(__DIR__ . '/../Stubs/responder.stub');
         $responderContent = str_replace(
             [
