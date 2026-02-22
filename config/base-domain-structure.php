@@ -12,7 +12,9 @@ return [
     ],
 
     'structure' => [
-        'ApplicationLayer',
+        'ApplicationLayer' => [
+            'UseCases'
+        ],
         'DomainLayer' => [
             'Entities',
             'ValueObjects',

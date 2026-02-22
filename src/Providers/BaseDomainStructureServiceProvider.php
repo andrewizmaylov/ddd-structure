@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace DomainDriven\BaseDomainStructure\Providers;
 
 use DomainDriven\BaseDomainStructure\Commands\CreateContextCommand;
+use DomainDriven\BaseDomainStructure\Commands\CreateUseCase;
 use Illuminate\Support\ServiceProvider;
 
 class BaseDomainStructureServiceProvider extends ServiceProvider
@@ -23,6 +24,7 @@ class BaseDomainStructureServiceProvider extends ServiceProvider
 
             $this->commands([
                 CreateContextCommand::class,
+                CreateUseCase::class,
             ]);
 
             $this->publishes([

@@ -1,0 +1,21 @@
+<?php
+
+declare(strict_types=1);
+
+namespace {{ namespace }};
+
+use {{ storage_fqcn }};
+use {{ repository_fqcn }};
+
+readonly class {{ class }}
+{
+    public function __construct(
+        private {{ storage }} $storage,
+        private {{ repository }} $repository,
+    ) {}
+
+    public function execute()
+    {
+        //
+    }
+}

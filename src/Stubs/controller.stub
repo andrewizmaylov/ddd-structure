@@ -1,0 +1,44 @@
+<?php
+
+declare(strict_types=1);
+
+namespace {{ namespace }};
+
+use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
+use Throwable;
+use {{ request_fqcn }};
+
+final readonly class {{ class }}
+{
+    public function __construct(
+        private LoggerInterface $logger,
+    ) {}
+
+    public function __invoke({{ request }} $request): JsonResponse
+    {
+        try {
+            //
+            return new JsonResponse();
+        } catch (Throwable $exception) {
+            $this->logger->critical(
+                'An unexpected error occurred with {{ class }}' . $exception->getMessage(),
+                ['stacktrace' => $exception->getTraceAsString()],
+            );
+
+            $response = new JsonResponse();
+            $response->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
+            $response->setData([
+                'errors' => [
+                    [
+                        'title' => 'internal_error',
+                        'detail' => 'An unexpected error occurred.',
+                    ],
+                ],
+            ]);
+
+            return $response;
+        }
+    }
+}
