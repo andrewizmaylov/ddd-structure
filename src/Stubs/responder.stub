@@ -1,0 +1,40 @@
+<?php
+
+declare(strict_types=1);
+
+namespace {{ namespace }};
+
+use Exception;
+use DomainDriven\BaseDomainStructure\Responder\PaginatedResult;
+use DomainDriven\BaseDomainStructure\Responder\Contracts\ResponderInterface;
+
+
+class {{ class }} implements ResponderInterface
+{
+    public function composePaginatedResults(PaginatedResult $paginatedResults): PaginatedResult
+    {
+        $processedItems = array_map(fn ($record) => $this->composeEntity($record), $paginatedResults->items);
+
+        $paginatedResults->withProcessedItems($processedItems);
+
+        return $paginatedResults;
+    }
+
+    public function composeEntity(object $entity): array
+    {
+        if (! $entity instanceof {{ class }}) {
+            throw new UnsupportedObjectException;
+        }
+
+        return [
+            'id' => $entity->id->value(),
+            'type' => '{{ class }}',
+            'attributes' => [
+            ],
+        ];
+    }
+
+    public function composeFromModel(object $model)
+    {
+    }
+}

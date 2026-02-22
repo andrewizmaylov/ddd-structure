@@ -6,8 +6,8 @@ namespace DomainDriven\BaseDomainStructure\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
-use Vendor\EnterpriseStructure\Support\PathResolver;
 use Vendor\EnterpriseStructure\Support\NamespaceResolver;
+use Vendor\EnterpriseStructure\Support\PathResolver;
 
 class CreateContextCommand extends Command
 {
@@ -18,8 +18,9 @@ class CreateContextCommand extends Command
     {
         $contextName = trim($this->argument('contextName'));
 
-        if (! preg_match('/^[A-Z][A-Za-z0-9]+$/', $contextName)) {
+        if (!preg_match('/^[A-Z][A-Za-z0-9]+$/', $contextName)) {
             $this->error('Bounded Context have to be in StudlyCase');
+
             return Command::FAILURE;
         }
 
@@ -27,8 +28,9 @@ class CreateContextCommand extends Command
         $path = "{$basePath}/{$contextName}";
 
         if (File::exists($path)) {
-            if (! $this->option('force')) {
+            if (!$this->option('force')) {
                 $this->error("Context [{$contextName}] already exists. Use --force to overwrite.");
+
                 return Command::FAILURE;
             }
             $this->warn("Removing existing context [{$contextName}]...");
@@ -51,44 +53,6 @@ class CreateContextCommand extends Command
         return Command::SUCCESS;
     }
 
-    private function updateOrCreateServiceProvider(string $contextName): void
-    {
-        $basePath = config('base-domain-structure.paths.src');
-        $providerPath = $basePath . '/ServiceProvider.php';
-        $baseNamespace = config('base-domain-structure.namespaces.src');
-
-        $contexts = collect(File::directories($basePath))
-            ->map(fn (string $path) => basename($path))
-            ->filter(fn (string $name) => ! str_starts_with($name, '.'))
-            ->sort()
-            ->values()
-            ->all();
-
-        $indent = '        ';
-        $registerRoutesBody = implode("\n", array_map(
-            fn (string $context) => $indent . "Route::middleware(\$this->openMiddleware)->group(__DIR__ . '/{$context}/PresentationLayer/HTTP/V1/routes.php');",
-            $contexts
-        ));
-
-        $contractsLines = [];
-        foreach ($contexts as $context) {
-            $domainNs = '\\' . $baseNamespace . '\\' . $context;
-            $contractsLines[] = $indent . "\$this->app->bind({$domainNs}\\DomainLayer\\Repository\\{$context}RepositoryInterface::class, {$domainNs}\\InfrastructureLayer\\Repository\\{$context}Repository::class);";
-            $contractsLines[] = $indent . "\$this->app->bind({$domainNs}\\DomainLayer\\Storage\\{$context}StorageInterface::class, {$domainNs}\\InfrastructureLayer\\Storage\\{$context}Storage::class);";
-        }
-        $registerContractsBody = implode("\n", $contractsLines);
-
-        $stub = File::get(__DIR__ . '/../Stubs/service-provider.stub');
-        $content = str_replace(
-            ['{{ namespace }}', '{{ register_routes_body }}', '{{ register_contracts_body }}'],
-            [$baseNamespace, $registerRoutesBody, $registerContractsBody],
-            $stub
-        );
-
-        File::put($providerPath, $content);
-        $this->line("Service provider updated: {$providerPath}");
-    }
-
     private function createDirectoriesRecursively(string $basePath, array $directories): void
     {
         foreach ($directories as $name => $children) {
@@ -97,7 +61,7 @@ class CreateContextCommand extends Command
 
             File::makeDirectory($dirPath, 0755, true);
 
-            if (! is_int($name) && is_array($children)) {
+            if (!is_int($name) && is_array($children)) {
                 $this->createDirectoriesRecursively($dirPath, $children);
             }
         }
@@ -152,5 +116,44 @@ class CreateContextCommand extends Command
             $stub
         );
         File::put($path . '/PresentationLayer/HTTP/V1/routes.php', $content);
+    }
+
+    private function updateOrCreateServiceProvider(string $contextName): void
+    {
+        $basePath = config('base-domain-structure.paths.src');
+        $providerPath = $basePath . '/ServiceProvider.php';
+        $baseNamespace = config('base-domain-structure.namespaces.src');
+
+        $contexts = collect(File::directories($basePath))
+            ->map(fn(string $path) => basename($path))
+            ->filter(fn(string $name) => !str_starts_with($name, '.'))
+            ->sort()
+            ->values()
+            ->all();
+
+        $indent = '        ';
+        $registerRoutesBody = implode("\n", array_map(
+            fn(string $context
+            ) => $indent . "Route::middleware(\$this->openMiddleware)->group(__DIR__ . '/{$context}/PresentationLayer/HTTP/V1/routes.php');",
+            $contexts
+        ));
+
+        $contractsLines = [];
+        foreach ($contexts as $context) {
+            $domainNs = '\\' . $baseNamespace . '\\' . $context;
+            $contractsLines[] = $indent . "\$this->app->bind({$domainNs}\\DomainLayer\\Repository\\{$context}RepositoryInterface::class, {$domainNs}\\InfrastructureLayer\\Repository\\{$context}Repository::class);";
+            $contractsLines[] = $indent . "\$this->app->bind({$domainNs}\\DomainLayer\\Storage\\{$context}StorageInterface::class, {$domainNs}\\InfrastructureLayer\\Storage\\{$context}Storage::class);";
+        }
+        $registerContractsBody = implode("\n", $contractsLines);
+
+        $stub = File::get(__DIR__ . '/../Stubs/service-provider.stub');
+        $content = str_replace(
+            ['{{ namespace }}', '{{ register_routes_body }}', '{{ register_contracts_body }}'],
+            [$baseNamespace, $registerRoutesBody, $registerContractsBody],
+            $stub
+        );
+
+        File::put($providerPath, $content);
+        $this->line("Service provider updated: {$providerPath}");
     }
 }
