@@ -1,0 +1,46 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Src;
+
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\ServiceProvider as IlluminateServiceProvider;
+
+class ServiceProvider extends IlluminateServiceProvider
+{
+    protected array $middlewareGroups = [
+        'auth:sanctum',
+    ];
+
+    protected array $openMiddleware = [
+      //
+    ];
+
+    /**
+     * Register domain service providers.
+     */
+    public function register(): void
+    {
+        $this->registerContracts();
+    }
+
+    /**
+     * Load routes after registering all services.
+     */
+    public function boot(): void
+    {
+        $this->registerRoutes();
+    }
+
+    public function registerRoutes(): void
+    {
+        Route::middleware($this->openMiddleware)->group(__DIR__ . '/{context}/PresentationLayer/HTTP/V1/routes.php');
+    }
+
+    public function registerContracts(): void
+    {
+        $this->app->bind({some}RepositoryInterface::class, {some}Repository::class);
+        $this->app->bind({some}StorageInterface::class, {some}Storage::class);
+    }
+}

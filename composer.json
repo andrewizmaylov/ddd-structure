@@ -1,0 +1,36 @@
+{
+    "name": "andreyizmaylov/base-domain-structure",
+    "description": "Base domain structure for Laravel applications",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "DomainDriven\\BaseDomainStructure\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "andrewizmaylov",
+            "email": "andrew.izmaylov@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^8.1"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "DomainDriven\\BaseDomainStructure\\Providers\\BaseDomainStructureServiceProvider"
+            ]
+        }
+    },
+    "require-dev": {
+        "pestphp/pest": "^4.3",
+        "orchestra/testbench": "^10.9"
+    },
+    "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    }
+}
