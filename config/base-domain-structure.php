@@ -29,7 +29,6 @@ return [
                     'Controllers',
                     'Requests',
                     'Responders',
-                    'routes.php'
                 ]
             ]
         ],
