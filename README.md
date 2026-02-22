@@ -87,7 +87,7 @@ php artisan make:context Balance
 ```
 
 ### 🙏 Acknowledgements
-Mehul Koradiya - For his foundational work on laravel-enterprise-structure, which inspired this package ❤️.
+Mehul Koradiya - For his foundational work on [laravel-enterprise-structure](https://github.com/mehulkoradiya/laravel-enterprise-structure), which inspired this package ❤️.
 
 ### 📄 License
 The MIT License (MIT). See LICENSE file for details.
