@@ -147,10 +147,12 @@ class CreateUseCase extends Command
             [
                 '{{ namespace }}',
                 '{{ class }}',
+                '{{ entity }}',
             ],
             [
                 $responderNs,
                 $responderClass,
+                $name,
             ],
             $responderStub
         );

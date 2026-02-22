@@ -8,6 +8,11 @@
             "DomainDriven\\BaseDomainStructure\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "DomainDriven\\BaseDomainStructure\\Tests\\": "tests/"
+        }
+    },
     "authors": [
         {
             "name": "andrewizmaylov",

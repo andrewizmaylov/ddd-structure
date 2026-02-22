@@ -20,12 +20,14 @@ class BaseDomainStructureServiceProvider extends ServiceProvider
 
     public function boot()
     {
-        if ($this->app->runningInConsole()) {
+        if ($this->app->runningInConsole() || $this->app->environment('testing')) {
             $this->commands([
                 CreateContextCommand::class,
                 CreateUseCase::class,
             ]);
+        }
 
+        if ($this->app->runningInConsole()) {
             $this->publishes([
                 __DIR__ . '/../../config/base-domain-structure.php'
                 => config_path('base-domain-structure.php'),
