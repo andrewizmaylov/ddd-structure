@@ -55,7 +55,6 @@ class CreateContextCommand extends Command
         ];
 
         File::makeDirectory($path, 0755, true);
-        File::put($path . '/.gitkeep', '');
 
         $this->createDirectoriesRecursively($path, $directories);
 
@@ -114,7 +113,6 @@ class CreateContextCommand extends Command
             $dirPath = $basePath . DIRECTORY_SEPARATOR . $dirName;
 
             File::makeDirectory($dirPath, 0755, true);
-            File::put($dirPath . '/.gitkeep', '');
 
             if (! is_int($name) && is_array($children)) {
                 $this->createDirectoriesRecursively($dirPath, $children);
@@ -163,7 +161,7 @@ class CreateContextCommand extends Command
             $stub
         );
         File::put($path . '/DomainLayer/Storage/' . $contextName . 'StorageInterface.php', $content);
-        
+
         File::put($path . '/PresentationLayer/HTTP/V1/routes.php', File::get(__DIR__ . '/../Stubs/routes.stub'));
     }
 }
