@@ -31,28 +31,7 @@ class CreateContextCommand extends Command
             return Command::FAILURE;
         }
 
-        $directories = [
-            'ApplicationLayer',
-            'DomainLayer' => [
-                'Repository',
-                'Storage',
-                'Entities',
-                'ValueObjects'
-            ],
-            'InfrastructureLayer' => [
-                'Repository',
-                'Storage',
-            ],
-            'PresentationLayer' => [
-                'HTTP' => [
-                    'V1' => [
-                        'Controllers',
-                        'Requests',
-                        'Responders',
-                    ]
-                ]
-            ],
-        ];
+        $directories = config('base-domain-structure.structure');
 
         File::makeDirectory($path, 0755, true);
 

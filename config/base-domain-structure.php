@@ -10,4 +10,28 @@ return [
     'namespaces' => [
         'src' => \Illuminate\Support\Str::studly($srcDir),
     ],
+
+    'structure' => [
+        'ApplicationLayer',
+        'DomainLayer' => [
+            'Entities',
+            'ValueObjects',
+            'Repository',
+            'Storage'
+        ],
+        'InfrastructureLayer' => [
+            'Repository',
+            'Storage',
+        ],
+        'PresentationLayer' => [
+            'HTTP' => [
+                'V1' => [
+                    'Controllers',
+                    'Requests',
+                    'Responders',
+                    'routes.php'
+                ]
+            ]
+        ],
+    ],
 ];

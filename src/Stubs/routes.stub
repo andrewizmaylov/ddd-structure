@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Illuminate\Support\Facades\Route
+use Illuminate\Support\Facades\Route;
 
 Route::prefix('public/api/v1/{{ class }}')
     ->group(function () {
