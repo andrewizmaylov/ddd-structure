@@ -14,35 +14,38 @@ php artisan vendor:publish --tag=base-domain-structure-config
 
 Here's a more detailed tree view of your configurable structure:
 ```text
-src/ # Source root (configurable via .env)
-|
-├── Balance
-|    ├── ApplicationLayer/ # Application Layer
-|    │ └── UseCases/ # Orchestrate business workflows
-|    │
-|    ├── DomainLayer/ # Domain Layer (Core business logic)
-|    │ ├── Entities/ # Business entities with behavior
-|    │ ├── ValueObjects/ # Immutable, comparable objects
-|    │ ├── Repository/ # Repository contracts (interfaces)
-|    │ └── Storage/ # Storage contracts
-|    │
-|    ├── InfrastructureLayer/ # Infrastructure Layer
-|    │ ├── Repository/ # Concrete repository implementations
-|    │ └── Storage/ # Concrete storage implementations
-|    │
-|    └── PresentationLayer/ # Presentation Layer
-|    |  └── HTTP/
-|    |   └── V1/ # API versioning
-|    |      ├── Controllers/ # Handle HTTP requests
-|    |      ├── Requests/ # Validation rules
-|    |      ├── Responders/ # Transform responses (JSON/
-|    |      └── routes.php
-|
-├── Company
-|
-├── Package
-|
-└── ServiceProvider.php 
+src/Balance/
+├── ApplicationLayer/
+│   └── UseCases/
+│       └── UpdateBalanceUseCase.php
+├── DomainLayer/
+│   ├── Entities/
+│   ├── Repository/
+│   │   ├── AccountRepositoryInterface.php
+│   │   └── BalanceTransactionRepositoryInterface.php
+│   ├── Services/
+│   │   ├── BalanceUpdateService.php
+│   │   └── CreateTransactionsService.php
+│   ├── Storage/
+│   │   ├── AccountStorageInterface.php
+│   │   └── BalanceTransactionStorageInterface.php
+│   └── ValueObjects/
+├── InfrastructureLayer/
+│   ├── Repository/
+│   │   ├── AccountRepository.php
+│   │   └── BalanceTransactionRepository.php
+│   └── Storage/
+│       ├── AccountStorage.php
+│       └── BalanceTransactionStorage.php
+└── PresentationLayer/
+    └── HTTP/V1/
+        ├── Controllers/
+        │   └── UpdateBalanceController.php
+        ├── Requests/
+        │   └── UpdateBalanceRequest.php
+        ├── Responders/
+        │   └── BalanceTransactionResponder.php
+        └── routes.php
 ```
 After publishing, you can modify default domain structure:
 ```php
@@ -84,6 +87,11 @@ BASE_DOMAIN_SRC_DIR=Domain
 Create Context structured folder
 ```text
 php artisan make:context Balance
+```
+
+Create UseCase structured folder
+```text
+php artisan make:use-case UpdateBalance Balance
 ```
 
 ### 🙏 Acknowledgements

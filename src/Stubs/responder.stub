@@ -23,18 +23,18 @@ class {{ class }} implements ResponderInterface
     public function composeEntity(object $entity): array
     {
         if (! $entity instanceof {{ entity }}) {
-            throw new Exception('Received unsupported entity ' . {{ entity }});
+            throw new Exception('Received unsupported entity ' . {{ entity }}::class);
         }
 
         return [
-            'id' => $entity->id->value(),
+            'id' => $entity->id,
             'type' => '{{ entity }}',
             'attributes' => [
             ],
         ];
     }
 
-    public function composeFromModel(object $model)
+    public function composeFromModel(object $model): object
     {
     }
 }

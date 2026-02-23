@@ -13,7 +13,7 @@ use {{ process_fqcn }};
 use {{ responder_fqcn }};
 use Throwable;
 
-final readonly class {{ class }} extends Controller
+final class {{ class }} extends Controller
 {
     public function __construct(
         public LoggerInterface $logger,
